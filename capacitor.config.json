@@ -1,0 +1,9 @@
+{
+  "appId": "com.laruche.menu",
+  "appName": "La Ruche",
+  "webDir": "www",
+  "backgroundColor": "#141518",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "force"
+  }
+}

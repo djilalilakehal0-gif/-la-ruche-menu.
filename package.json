@@ -1,0 +1,14 @@
+{
+  "name": "la-ruche-menu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Menu et commande en ligne - La Ruche, Les Mureaux",
+  "dependencies": {
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/core": "^7.4.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.4.0"
+  }
+}
