@@ -161,16 +161,16 @@ footer{max-width:680px;margin:0 auto;padding:24px 16px calc(var(--bas) + 96px);t
 .remarque{margin:0;color:var(--gris);font-size:12.5px;text-align:center}
 
 /* =========================================================
-   7. ÉCRAN D'ACCUEIL ANIMÉ + ANIMATIONS
+   7. VIDÉO D'ACCUEIL + ANIMATIONS
    Tout est désactivé si le téléphone demande "réduire les animations".
    ========================================================= */
-.intro{display:none}
+/* Vidéo plein écran à l'ouverture, avec bouton "Passer" */
+.video-intro{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:#000;transition:opacity .45s ease}
+.video-intro.fin{opacity:0;pointer-events:none}
+.video-intro video{width:100%;height:100%;object-fit:contain;background:#000}
+.passer{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;min-height:44px;padding:0 18px;border:1px solid rgba(242,193,78,.7);border-radius:999px;background:rgba(0,0,0,.55);color:var(--or-texte);font-weight:800;font-size:15px}
+.progression{position:absolute;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);height:4px;background:var(--or);transform-origin:left;transform:scaleX(0)}
 @media (prefers-reduced-motion:no-preference){
-  .intro{display:grid;place-items:center;position:fixed;inset:0;z-index:50;background:var(--or);color:var(--encre);animation:disparaitre .4s 1.1s ease-in forwards}
-  .intro div{display:grid;justify-items:center;gap:6px;font:400 58px/1 var(--pinceau)}
-  .intro span{font-size:60px;animation:voler 1.1s ease-in-out}
-  @keyframes voler{0%{transform:translate(-60px,30px) rotate(-15deg);opacity:0}60%{transform:translate(8px,-6px) rotate(6deg);opacity:1}}
-  @keyframes disparaitre{to{opacity:0;visibility:hidden}}
   .anime .vedette,.anime .ligne{opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease}
   .anime .vedette.visible,.anime .ligne.visible{opacity:1;transform:none}
   .vedette .photo img{transition:transform .4s ease}
@@ -195,8 +195,16 @@ footer{max-width:680px;margin:0 auto;padding:24px 16px calc(var(--bas) + 96px);t
 </head>
 <body>
 
-<!-- Écran d'accueil animé (disparaît tout seul) -->
-<div class="intro" id="intro" aria-hidden="true"><div><span>🐝</span>La Ruche</div></div>
+<!-- Vidéo d'accueil : se ferme toute seule à la fin, ou avec "Passer".
+     VIDÉO : remplacez www/video/burger-luxe.webm et burger-luxe.mp4 pour la changer -->
+<div class="video-intro" id="videoIntro">
+  <video id="videoPub" muted playsinline preload="auto" aria-label="Vidéo de présentation du burger">
+    <source src="video/burger-luxe.webm" type="video/webm">
+    <source src="video/burger-luxe.mp4" type="video/mp4">
+  </video>
+  <button class="passer" id="passer">Passer ›</button>
+  <div class="progression" id="progression"></div>
+</div>
 
 <!-- En-tête jaune fixe -->
 <header class="entete" id="entete">
@@ -679,6 +687,42 @@ function animerPlats() {
 }
 
 /* =========================================================
+   H2. VIDÉO D'ACCUEIL
+   Jouée une fois à chaque ouverture de l'application (pas en rechargeant la page),
+   sans son. Sautée si le téléphone demande "réduire les animations".
+   ========================================================= */
+function videoAccueil() {
+  const boite = $("videoIntro"), video = $("videoPub");
+  let dejaVue = false;
+  try { dejaVue = sessionStorage.getItem("laruche-video") === "1"; } catch (e) { /* stockage indisponible */ }
+  if (dejaVue || !animations) { boite.remove(); return; }
+
+  document.body.classList.add("bloque");
+  let fermee = false;
+  const fermer = () => {
+    if (fermee) return;
+    fermee = true;
+    try { sessionStorage.setItem("laruche-video", "1"); } catch (e) { /* rien */ }
+    boite.classList.add("fin");
+    document.body.classList.remove("bloque");
+    video.pause();
+    setTimeout(() => boite.remove(), 450);
+  };
+  $("passer").onclick = fermer;
+  video.addEventListener("ended", fermer);
+  // si aucune version de la vidéo ne peut être lue, on passe au menu
+  const sources = video.querySelectorAll("source");
+  sources[sources.length - 1].addEventListener("error", fermer);
+  video.addEventListener("timeupdate", () => {
+    $("progression").style.transform = `scaleX(${video.currentTime / (video.duration || 15)})`;
+  });
+  // si le téléphone refuse la lecture automatique, on passe directement au menu
+  const lecture = video.play();
+  if (lecture && lecture.catch) lecture.catch(fermer);
+  setTimeout(fermer, 20000);   // sécurité : jamais bloqué sur la vidéo
+}
+
+/* =========================================================
    I. CLICS SUR LES BOUTONS
    ========================================================= */
 document.addEventListener("click", e => {
@@ -716,7 +760,7 @@ afficherHoraires();
 majHauteur();
 suivreCategories();
 animerPlats();
-setTimeout(() => $("intro").remove(), 1600);
+videoAccueil();
 </script>
 </body>
 </html>
