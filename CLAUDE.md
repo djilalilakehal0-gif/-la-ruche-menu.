@@ -12,7 +12,7 @@
 - يتحوّل لتطبيق أندرويد بـ Capacitor (`capacitor.config.json`)، والـ APK يُبنى عبر GitHub Actions (`.github/workflows/build.yml`)، فيجب أن يبقى الكود متوافقاً مع ذلك.
 
 ## المميزات
-1. أقسام المنيو (حالياً المنيو الحقيقي للمطعم: Menus Classics، Menus Géants، Tacos، Assiettes، Barquettes، Menu Kids، Desserts، Boissons).
+1. أقسام المنيو (حالياً: Burgers — أمثلة بأسعار تُؤكَّد لاحقاً، صورها PNG بدون خلفية في `www/img/burger-*.png` — ثم المنيو الحقيقي للمطعم: Menus Classics، Menus Géants، Tacos، Assiettes، Barquettes، Menu Kids، Desserts، Boissons).
 2. كل طبق: صورة، اسم، وصف قصير، سعر باليورو.
 3. زر "+" و"−" لاختيار الكمية.
 4. سلة تعرض الطلب والمجموع الكلي تلقائياً.
