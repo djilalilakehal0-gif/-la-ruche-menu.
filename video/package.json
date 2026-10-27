@@ -6,7 +6,8 @@
   "scripts": {
     "studio": "remotion studio src/index.jsx",
     "render": "remotion render src/index.jsx LaRuchePromo out/la-ruche-promo.mp4",
-    "render:motion": "remotion render src/index.jsx LaRucheMotion out/la-ruche-motion.mp4"
+    "render:motion": "remotion render src/index.jsx LaRucheMotion out/la-ruche-motion.mp4",
+    "render:burger": "remotion render src/index.jsx BurgerLuxe out/burger-luxe.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.536",
