@@ -5,7 +5,8 @@
   "description": "Vidéo promo La Ruche avec Remotion",
   "scripts": {
     "studio": "remotion studio src/index.jsx",
-    "render": "remotion render src/index.jsx LaRuchePromo out/la-ruche-promo.mp4"
+    "render": "remotion render src/index.jsx LaRuchePromo out/la-ruche-promo.mp4",
+    "render:motion": "remotion render src/index.jsx LaRucheMotion out/la-ruche-motion.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.536",
