@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#0E0E0E">
 <meta name="description" content="Menu et commande en ligne – La Ruche, Les Mureaux">
 <title>La Ruche · Menu</title>
@@ -30,10 +30,14 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--noir);color:var(--texte);font:15px/1.45 var(--corps);-webkit-tap-highlight-color:transparent}
+/* mobile : pas de flash gris au toucher, pas de rebond qui tire la page, pas de zoom du texte en paysage */
+html{-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{background:var(--noir);color:var(--texte);font:15px/1.45 var(--corps)}
 body.bloque{overflow:hidden}
 img{display:block;max-width:100%}
 button{font:inherit;color:inherit;cursor:pointer}
+/* les boutons et liens-boutons répondent tout de suite (pas de délai 300 ms) et leur texte ne se sélectionne pas au toucher long */
+button,.appeler,.appeler-bas,.logo{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--miel);outline-offset:2px}
 
 /* =========================================================
@@ -84,7 +88,7 @@ main{max-width:680px;margin:0 auto;padding:0 16px 20px}
 .infos h3{margin:0;font-size:16.5px;font-weight:800;line-height:1.2}
 .badge{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:5px;background:var(--miel);color:var(--encre);font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;vertical-align:2px}
 .infos p{margin:0;color:var(--gris);font-size:13px;line-height:1.35}
-.ligne-prix{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.ligne-prix{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
 .prix{font:900 19px/1 var(--titre);color:var(--miel);font-variant-numeric:tabular-nums}
 
 /* boutons de quantité "+" et "−" */
@@ -105,7 +109,7 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
    6. FENÊTRE DU PANIER (glisse depuis le bas)
    ========================================================= */
 .voile{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.65)}
-.feuille{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:92%;overflow-y:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--miel);border-radius:24px 24px 0 0;background:var(--panneau)}
+.feuille{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:92%;overflow-y:auto;overscroll-behavior:contain;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--miel);border-radius:24px 24px 0 0;background:var(--panneau)}
 .feuille-contenu{max-width:648px;margin:0 auto;display:grid;gap:16px}
 .feuille-titre{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .feuille-titre h2{margin:0;font:900 24px/1 var(--titre);text-transform:uppercase}
@@ -146,8 +150,8 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
   @keyframes disparaitre{to{opacity:0;visibility:hidden}}
   .anime .plat{opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease}
   .anime .plat.visible{opacity:1;transform:none}
-  .qte button,.onglet,.types button,.commander,.barre-panier button{transition:transform .12s ease,background-color .2s,color .2s}
-  .qte button:active,.onglet:active,.types button:active,.commander:active,.appeler:active{transform:scale(.92)}
+  .qte button,.onglet,.types button,.commander,.barre-panier button,.appeler,.appeler-bas{transition:transform .12s ease-out,background-color .2s,color .2s}
+  .qte button:active,.onglet:active,.types button:active,.commander:active,.appeler:active,.appeler-bas:active,.barre-panier button:active{transform:scale(.97)}
   .saute{animation:saute .35s cubic-bezier(.3,1.6,.5,1)}
   @keyframes saute{from{transform:scale(.5)}}
   .barre-panier:not([hidden]) button{animation:monter .4s cubic-bezier(.2,.9,.3,1.2)}
