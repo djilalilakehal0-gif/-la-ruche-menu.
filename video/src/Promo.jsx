@@ -4,12 +4,12 @@ import {
 } from "remotion";
 
 // Same palette as the app (www/index.html)
-const C = {bg: "#141518", panel: "#1E2024", fg: "#F4F2EE", muted: "#A9ABB0", gold: "#F28A1E", ink: "#1C0F03", ok: "#2DAA63"};
-const HEX = "polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)";
-const display = {fontFamily: "Anton", fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95};
-const body = {fontFamily: "Figtree", fontWeight: 600};
+export const C = {bg: "#141518", panel: "#1E2024", fg: "#F4F2EE", muted: "#A9ABB0", gold: "#F28A1E", ink: "#1C0F03", ok: "#2DAA63"};
+export const HEX = "polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)";
+export const display = {fontFamily: "Anton", fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95};
+export const body = {fontFamily: "Figtree", fontWeight: 600};
 
-const DISHES = [
+export const DISHES = [
   {img: "kebab.jpg", n: "Kebab", d: "Veau, volaille", p: "7,00 €"},
   {img: "escalope.jpg", n: "Escalope", d: "Escalope de poulet, fromage", p: "8,00 €"},
   {img: "americain.jpg", n: "Américain", d: "3 steaks, œuf, fromage, bacon", p: "8,50 €"},
@@ -27,7 +27,7 @@ const S = {
 };
 export const DURATION = S.outro[0] + S.outro[1];
 
-const Fonts = () => (
+export const Fonts = () => (
   <style>{`
     @font-face{font-family:Anton;src:url(${staticFile("Anton.woff2")}) format("woff2")}
     @font-face{font-family:Figtree;src:url(${staticFile("Figtree.woff2")}) format("woff2");font-weight:300 900}
@@ -41,12 +41,12 @@ const Fade = ({len, children, inF = 10, outF = 10}) => {
   return <AbsoluteFill style={{opacity: o}}>{children}</AbsoluteFill>;
 };
 
-const rise = (f, fps, delay = 0, dist = 60) => {
+export const rise = (f, fps, delay = 0, dist = 60) => {
   const s = spring({frame: f - delay, fps, config: {damping: 16}});
   return {opacity: s, transform: `translateY(${(1 - s) * dist}px)`};
 };
 
-const HexLogo = ({size, progress, stroke = 3}) => (
+export const HexLogo = ({size, progress, stroke = 3}) => (
   <svg width={size} height={size} viewBox="0 0 40 40">
     <path d="M11 4h18l10 16-10 16H11L1 20z" fill="none" stroke={C.gold} strokeWidth={stroke}
       strokeDasharray={110} strokeDashoffset={110 * (1 - progress)} strokeLinejoin="round" />
@@ -54,7 +54,7 @@ const HexLogo = ({size, progress, stroke = 3}) => (
 );
 
 // Honeycomb pattern drifting slowly in the background
-const Comb = ({opacity = 0.07}) => {
+export const Comb = ({opacity = 0.07}) => {
   const f = useCurrentFrame();
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='112' height='194' viewBox='0 0 56 97'><path d='M28 66L0 50V17L28 1l28 16v33zM28 97L0 81M56 81L28 97V66' fill='none' stroke='%23F28A1E' stroke-width='1.5'/></svg>`;
   return <AbsoluteFill style={{opacity, backgroundImage: `url("data:image/svg+xml,${svg}")`, backgroundPosition: `0 ${-f * 0.8}px`}} />;
