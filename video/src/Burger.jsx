@@ -4,7 +4,7 @@ import {
 } from "remotion";
 
 /*
-  "برغر الفخامة" — 15 s luxury burger spot, 1080×1350 (4:5).
+  "برغر La Ruche" — 15 s luxury burger spot, 1080×1350 (4:5).
   public/burger/plate.jpg is the poster with all its text removed, so every
   title, label and badge below is animated on its own.
 */
@@ -116,7 +116,9 @@ const Title = ({inAt, outAt, backAt}) => {
   return (
     <div style={{position: "absolute", top: 118, width: "100%", display: "grid", justifyItems: "center"}}>
       <div style={{clipPath: `inset(0 0 0 ${inset}%)`, transform: `translateY(${(1 - rise) * 30}px) scale(${1 + (1 - rise) * 0.08})`}}>
-        <GoldText size={150} shine={shine}>برغر الفخامة</GoldText>
+        <GoldText size={132} shine={shine}>
+          برغر <span style={{fontFamily: "Kaushan Script", fontWeight: 400, direction: "ltr", unicodeBidi: "isolate", marginRight: 14}}>La Ruche</span>
+        </GoldText>
       </div>
       <div style={{display: "flex", gap: 16, direction: "rtl", marginTop: -6, opacity: subOut}}>
         {mots.map((m, i) => {
