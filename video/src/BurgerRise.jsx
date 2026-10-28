@@ -1,4 +1,4 @@
-import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig, Easing} from "remotion";
+import {AbsoluteFill, Audio, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig, Easing} from "remotion";
 
 /*
   "برغر La Ruche" — levitating burger, 60 fps, 1080×1350.
@@ -13,6 +13,7 @@ import {AbsoluteFill, Img, interpolate, staticFile, useCurrentFrame, useVideoCon
     lettuce.png      lettuce alone, animated with a moving displacement
     cheese.png       melted cheese alone, stretched to make it sag
     cheese-tex.jpg   real cheese texture used to fill the drips
+    music-rise.wav   original music + sound effects, made by scripts/music_burger_rise.py
 */
 export const RISE_FPS = 60;
 export const RISE_DURATION = Math.round(12.5 * RISE_FPS);
@@ -402,6 +403,7 @@ export const BurgerRise = () => {
   return (
     <AbsoluteFill style={{background: "#060607", overflow: "hidden"}}>
       <Fonts />
+      <Audio src={staticFile("burger/music-rise.wav")} />
       <LettuceFilter t={t} />
       <Table t={t} shake={shake} />
       <Spot t={t} />
