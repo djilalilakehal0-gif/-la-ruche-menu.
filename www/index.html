@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-flavour="miel">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,11 +12,12 @@
    Pour changer les couleurs, modifiez seulement ces variables.
    ========================================================= */
 :root{
-  --miel:#FFB800;        /* jaune miel principal */
-  --encre:#140E00;       /* texte posé sur le jaune */
-  --noir:#0E0E0E;        /* fond de page */
-  --panneau:#1A1A1A;     /* fond des cartes */
-  --panneau-2:#252525;   /* fond des champs et boutons secondaires */
+  /* Palette par défaut = saveur "miel". Les 3 saveurs ci-dessous la remplacent. */
+  --accent:#FFB800;        /* couleur d'accent : boutons, prix, titres (= "--ink" du brief) */
+  --sur-accent:#140E00;    /* texte posé sur l'accent */
+  --fond:#0E0E0E;          /* fond de page */
+  --panneau:#1A1A1A;       /* fond des cartes */
+  --panneau-2:#252525;     /* fond des champs et boutons secondaires */
   --texte:#FAF7F0;
   --gris:#A8A49B;
   --ligne:#2E2E2E;
@@ -27,37 +28,72 @@
   --hexagone:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
   color-scheme:dark;
 }
+/* =========================================================
+   1 bis. LES TROIS SAVEURS
+   La page entière change de couleurs selon la section qui passe au milieu
+   de l'écran (le script écrit son nom dans <html data-flavour="...">).
+     miel   → Menus Classics, Menus Géants, Tacos
+     braise → Assiettes, Barquettes, Menu Kids
+     cerise → Desserts, Boissons
+   ========================================================= */
+:root[data-flavour="miel"]{
+  --accent:#FFB800; --sur-accent:#140E00; --fond:#0E0E0E; --panneau:#1A1A1A; --panneau-2:#252525;
+  --texte:#FAF7F0; --gris:#A8A49B; --ligne:#2E2E2E;
+}
+:root[data-flavour="braise"]{
+  --accent:#FF7A2F; --sur-accent:#1E0A00; --fond:#1C0F0A; --panneau:#2A1812; --panneau-2:#3A2219;
+  --texte:#FFF3EA; --gris:#C4A99A; --ligne:#4A2D20;
+}
+:root[data-flavour="cerise"]{
+  --accent:#FF5C8A; --sur-accent:#2A0614; --fond:#1A0A14; --panneau:#2A1220; --panneau-2:#3A1A2C;
+  --texte:#FFF0F5; --gris:#C9A5B6; --ligne:#4A2540;
+}
+
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
-body{background:var(--noir);color:var(--texte);font:15px/1.45 var(--corps);-webkit-tap-highlight-color:transparent}
+body{background:var(--fond);color:var(--texte);font:15px/1.45 var(--corps);-webkit-tap-highlight-color:transparent}
+/* la page fond d'une saveur à l'autre (600 ms) */
+@media (prefers-reduced-motion:no-preference){
+  body{transition:background-color .6s ease,color .6s ease}
+  .entete,.plat,.photo,.photo img,.onglet,.appeler,.badge,.categorie h2,.prix,.accueil .infos-resto,.barre-panier,.feuille,.champ input,.champ textarea{transition:background-color .6s ease,color .6s ease,border-color .6s ease}
+}
+
+/* Ingrédients flottants en profondeur (derrière le contenu, sans WebGL) */
+.ingredients{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:strict}
+.groupe{position:absolute;inset:0;opacity:0;transition:opacity .6s ease}
+.groupe.actif{opacity:1}
+.ing{position:absolute;left:0;top:0;line-height:1;user-select:none;will-change:transform}
+.ing img{width:1em;height:1em;object-fit:contain}
+.entete,.accueil,main,footer{position:relative;z-index:1}
+.entete{z-index:10}
 body.bloque{overflow:hidden}
 img{display:block;max-width:100%}
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--miel);outline-offset:2px}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* =========================================================
    2. EN-TÊTE FIXE : logo + bouton "Appeler" + onglets des catégories
    ========================================================= */
-.entete{position:sticky;top:0;z-index:10;background:var(--noir);padding-top:env(safe-area-inset-top,0px);border-bottom:1px solid var(--ligne)}
+.entete{position:sticky;top:0;z-index:10;background:var(--fond);padding-top:env(safe-area-inset-top,0px);border-bottom:1px solid var(--ligne)}
 .barre{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px}
 .logo{display:flex;align-items:center;gap:8px;font:900 22px/1 var(--titre);letter-spacing:.02em;text-transform:uppercase;color:var(--texte);text-decoration:none}
 .logo .abeille{font-size:26px}
-.logo b{color:var(--miel)}
-.appeler{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--miel);color:var(--encre);font-weight:800;font-size:15px;text-decoration:none;white-space:nowrap}
+.logo b{color:var(--accent)}
+.appeler{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;background:var(--accent);color:var(--sur-accent);font-weight:800;font-size:15px;text-decoration:none;white-space:nowrap}
 .appeler svg{width:18px;height:18px}
 .onglets{max-width:680px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:4px 16px 12px;scrollbar-width:none}
 .onglets::-webkit-scrollbar{display:none}
 .onglet{flex:none;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--ligne);background:var(--panneau);font-weight:700;font-size:14px}
-.onglet.actif{background:var(--miel);border-color:var(--miel);color:var(--encre)}
+.onglet.actif{background:var(--accent);border-color:var(--accent);color:var(--sur-accent)}
 
 /* =========================================================
    3. BANDEAU D'ACCUEIL (photo de la devanture + infos)
    ========================================================= */
 .accueil{position:relative;max-width:680px;margin:0 auto}
 .accueil img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:50% 55%}
-.accueil .infos-resto{position:absolute;inset:auto 0 0 0;padding:90px 16px 16px;background:linear-gradient(transparent,rgba(14,14,14,.88) 40%,var(--noir) 85%)}
-.accroche{margin:0;color:var(--miel);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.accueil .infos-resto{position:absolute;inset:auto 0 0 0;padding:90px 16px 16px;background:linear-gradient(transparent,color-mix(in srgb,var(--fond) 88%,transparent) 40%,var(--fond) 85%)}
+.accroche{margin:0;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
 .accueil h1{margin:4px 0 8px;font:900 44px/1 var(--titre);text-transform:uppercase}
 .details{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--gris);font-size:13.5px}
 .etat{font-weight:700}
@@ -69,28 +105,28 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
    ========================================================= */
 main{max-width:680px;margin:0 auto;padding:0 16px 20px}
 .categorie{padding-top:28px;scroll-margin-top:calc(118px + env(safe-area-inset-top,0px))}
-.categorie h2{margin:0;font:900 26px/1.1 var(--titre);text-transform:uppercase;color:var(--miel)}
+.categorie h2{margin:0;font:900 26px/1.1 var(--titre);text-transform:uppercase;color:var(--accent)}
 .sous-titre{margin:4px 0 0;color:var(--gris);font-size:13.5px}
 .liste{display:grid;gap:12px;margin-top:14px}
 @media (min-width:640px){.liste{grid-template-columns:1fr 1fr}}
-.plat{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:center;padding:12px;border:1px solid var(--ligne);border-radius:18px;background:var(--panneau)}
+.plat{display:grid;grid-template-columns:104px 1fr;gap:14px;align-items:center;padding:12px;border:1px solid var(--ligne);border-radius:18px;background:var(--panneau);background:color-mix(in srgb,var(--panneau) 84%,transparent)}
 /* photo en forme d'alvéole (hexagone) avec un contour miel */
-.photo{width:104px;aspect-ratio:1.15/1;padding:3px;background:var(--miel);clip-path:var(--hexagone)}
+.photo{width:104px;aspect-ratio:1.15/1;padding:3px;background:var(--accent);clip-path:var(--hexagone)}
 .photo img{width:100%;height:100%;object-fit:cover;clip-path:var(--hexagone);background:var(--panneau-2)}
 /* les canettes sont hautes : on les montre entières, sans hexagone */
 .photo.canette{background:none;clip-path:none;padding:0;aspect-ratio:1/1}
 .photo.canette img{object-fit:contain;clip-path:none;background:none}
 .infos{min-width:0;display:grid;gap:4px}
 .infos h3{margin:0;font-size:16.5px;font-weight:800;line-height:1.2}
-.badge{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:5px;background:var(--miel);color:var(--encre);font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;vertical-align:2px}
+.badge{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:5px;background:var(--accent);color:var(--sur-accent);font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;vertical-align:2px}
 .infos p{margin:0;color:var(--gris);font-size:13px;line-height:1.35}
 .ligne-prix{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
-.prix{font:900 19px/1 var(--titre);color:var(--miel);font-variant-numeric:tabular-nums}
+.prix{font:900 19px/1 var(--titre);color:var(--accent);font-variant-numeric:tabular-nums}
 
 /* boutons de quantité "+" et "−" */
 .qte{display:flex;align-items:center;gap:6px}
 .qte button{width:44px;height:44px;border-radius:14px;border:none;font-size:24px;font-weight:800;line-height:1}
-.qte .plus{background:var(--miel);color:var(--encre)}
+.qte .plus{background:var(--accent);color:var(--sur-accent)}
 .qte .moins{background:var(--panneau-2);color:var(--texte);border:1px solid var(--ligne)}
 .qte .nombre{min-width:26px;text-align:center;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
 footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;color:var(--gris);font-size:12.5px}
@@ -98,14 +134,14 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
 /* =========================================================
    5. BARRE DU PANIER (en bas, visible dès qu'un article est choisi)
    ========================================================= */
-.barre-panier{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:14px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--noir) 40%)}
-.barre-panier button{width:100%;max-width:648px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px;padding:0 20px;border:none;border-radius:18px;background:var(--miel);color:var(--encre);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;box-shadow:0 10px 30px rgba(255,184,0,.25)}
+.barre-panier{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:14px 16px calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--fond) 40%)}
+.barre-panier button{width:100%;max-width:648px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:58px;padding:0 20px;border:none;border-radius:18px;background:var(--accent);color:var(--sur-accent);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 25%,transparent)}
 
 /* =========================================================
    6. FENÊTRE DU PANIER (glisse depuis le bas)
    ========================================================= */
 .voile{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.65)}
-.feuille{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:92%;overflow-y:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--miel);border-radius:24px 24px 0 0;background:var(--panneau)}
+.feuille{position:fixed;left:0;right:0;bottom:0;z-index:31;max-height:92%;overflow-y:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));border-top:3px solid var(--accent);border-radius:24px 24px 0 0;background:var(--panneau)}
 .feuille-contenu{max-width:648px;margin:0 auto;display:grid;gap:16px}
 .feuille-titre{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .feuille-titre h2{margin:0;font:900 24px/1 var(--titre);text-transform:uppercase}
@@ -117,19 +153,19 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
 .article .qte{grid-column:1/-1}
 .article .qte button{width:38px;height:38px;font-size:20px;border-radius:12px}
 .vider{justify-self:start;border:none;background:none;color:var(--gris);text-decoration:underline;font-size:13px;padding:4px 0}
-.total{display:flex;justify-content:space-between;font:900 24px/1 var(--titre);color:var(--miel);font-variant-numeric:tabular-nums}
+.total{display:flex;justify-content:space-between;font:900 24px/1 var(--titre);color:var(--accent);font-variant-numeric:tabular-nums}
 
 /* formulaire client */
 .champ{display:grid;gap:6px;color:var(--gris);font-size:13.5px;font-weight:600}
-.champ input,.champ textarea{width:100%;padding:13px 14px;border:1px solid var(--ligne);border-radius:12px;background:var(--noir);color:var(--texte);font:16px var(--corps)}
+.champ input,.champ textarea{width:100%;padding:13px 14px;border:1px solid var(--ligne);border-radius:12px;background:var(--fond);color:var(--texte);font:16px var(--corps)}
 .champ textarea{min-height:76px;resize:vertical}
 .types{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .types button{min-height:48px;padding:0 4px;border:1px solid var(--ligne);border-radius:12px;background:var(--panneau-2);font-weight:700;font-size:14px}
-.types button.choisi{background:var(--miel);border-color:var(--miel);color:var(--encre)}
+.types button.choisi{background:var(--accent);border-color:var(--accent);color:var(--sur-accent)}
 .erreur{margin:0;color:var(--rouge);font-size:14px;font-weight:600}
 .commander{display:flex;align-items:center;justify-content:center;gap:10px;min-height:58px;border:none;border-radius:16px;background:var(--vert);color:#fff;font-weight:800;font-size:17px}
 .commander svg{width:22px;height:22px}
-.appeler-bas{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:1px solid var(--miel);border-radius:16px;color:var(--miel);font-weight:800;text-decoration:none}
+.appeler-bas{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:1px solid var(--accent);border-radius:16px;color:var(--accent);font-weight:800;text-decoration:none}
 .appeler-bas svg{width:18px;height:18px}
 .remarque{margin:0;color:var(--gris);font-size:12.5px;text-align:center}
 
@@ -139,14 +175,14 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
    ========================================================= */
 .intro{display:none}
 @media (prefers-reduced-motion:no-preference){
-  .intro{display:grid;place-items:center;position:fixed;inset:0;z-index:50;background:var(--noir);animation:disparaitre .4s 1.1s ease-in forwards}
+  .intro{display:grid;place-items:center;position:fixed;inset:0;z-index:50;background:var(--fond);animation:disparaitre .4s 1.1s ease-in forwards}
   .intro div{display:grid;justify-items:center;gap:10px;font:900 40px/1 var(--titre);text-transform:uppercase}
   .intro span{font-size:64px;animation:voler 1.1s ease-in-out}
   @keyframes voler{0%{transform:translate(-60px,30px) rotate(-15deg);opacity:0}60%{transform:translate(8px,-6px) rotate(6deg);opacity:1}}
   @keyframes disparaitre{to{opacity:0;visibility:hidden}}
   .anime .plat{opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease}
   .anime .plat.visible{opacity:1;transform:none}
-  .qte button,.onglet,.types button,.commander,.barre-panier button{transition:transform .12s ease,background-color .2s,color .2s}
+  .qte button,.onglet,.types button,.commander,.barre-panier button{transition:transform .12s ease,background-color .6s ease,color .6s ease,border-color .6s ease}
   .qte button:active,.onglet:active,.types button:active,.commander:active,.appeler:active{transform:scale(.92)}
   .saute{animation:saute .35s cubic-bezier(.3,1.6,.5,1)}
   @keyframes saute{from{transform:scale(.5)}}
@@ -196,6 +232,9 @@ footer{max-width:680px;margin:0 auto;padding:10px 16px 140px;text-align:center;c
 </section>
 
 <!-- Le menu est construit automatiquement à partir de la liste MENU (dans le script) -->
+<!-- Ingrédients qui défilent en parallaxe (construits par le script) -->
+<div class="ingredients" id="ingredients" aria-hidden="true"></div>
+
 <main id="menu"></main>
 <footer>Démo · Prix d'après la carte du restaurant, à confirmer.<br>Commande envoyée directement au restaurant sur WhatsApp, sans commission.</footer>
 
@@ -353,6 +392,25 @@ const SOUS_TITRES = {
 };
 
 /* =========================================================
+   B bis. LES TROIS SAVEURS (ambiances de couleur + ingrédients)
+     id          nom de la saveur = valeur de data-flavour (les couleurs sont dans le CSS "1 bis")
+     fond        couleur de la barre du téléphone (theme-color)
+     categories  catégories du MENU qui appartiennent à cette saveur
+     ingredients 8 éléments [image, x %, y %, vitesse] :
+        image    un emoji OU le chemin d'un PNG (ex : "img/ingredients/tomate.png")
+        x, y     position de départ en % de l'écran
+        vitesse  0.2 à 0.6 × le défilement (petit = lent et flou, grand = rapide et net)
+   ========================================================= */
+const SAVEURS = [
+  { id:"miel", fond:"#0E0E0E", categories:["Menus Classics", "Menus Géants", "Tacos"],
+    ingredients:[["🍔",80,12,.6], ["🧀",8,42,.4], ["🍅",88,62,.3], ["🥬",14,86,.25], ["🍟",58,30,.5], ["🥓",30,8,.35], ["🧅",92,92,.2], ["🥒",46,70,.45]] },
+  { id:"braise", fond:"#1C0F0A", categories:["Assiettes", "Barquettes", "Menu Kids"],
+    ingredients:[["🍗",78,14,.6], ["🥕",10,40,.4], ["🥔",90,58,.3], ["🍋",16,84,.25], ["🫒",56,28,.5], ["🌶️",32,10,.35], ["🥖",92,90,.2], ["🍢",44,72,.45]] },
+  { id:"cerise", fond:"#1A0A14", categories:["Desserts", "Boissons"],
+    ingredients:[["🍒",82,12,.6], ["🍓",8,44,.4], ["🍦",88,64,.3], ["🧊",14,88,.25], ["🍋",60,32,.5], ["🍫",30,8,.35], ["🥤",92,92,.2], ["🍰",46,68,.45]] },
+];
+
+/* =========================================================
    C. OUTILS
    ========================================================= */
 const $ = id => document.getElementById(id);
@@ -439,12 +497,17 @@ function afficherMenu() {
   const categories = [...new Set(MENU.map(p => p.categorie))];
   $("onglets").innerHTML = categories.map((c, i) =>
     `<button class="onglet${i ? "" : " actif"}" data-aller="${idCategorie(c)}">${c}</button>`).join("");
-  $("menu").innerHTML = categories.map(c => `
+  const section = c => `
     <section class="categorie" id="${idCategorie(c)}">
       <h2>${c}</h2>
       ${SOUS_TITRES[c] ? `<p class="sous-titre">${SOUS_TITRES[c]}</p>` : ""}
       <div class="liste">${MENU.filter(p => p.categorie === c).map(cartePlat).join("")}</div>
-    </section>`).join("");
+    </section>`;
+  // chaque saveur enveloppe ses catégories ; une catégorie oubliée va dans la dernière saveur
+  const groupes = SAVEURS.map(s => ({ id: s.id, cats: categories.filter(c => s.categories.includes(c)) }));
+  categories.filter(c => !SAVEURS.some(s => s.categories.includes(c))).forEach(c => groupes[groupes.length - 1].cats.push(c));
+  $("menu").innerHTML = groupes.filter(g => g.cats.length)
+    .map(g => `<div class="saveur" id="${g.id}">${g.cats.map(section).join("")}</div>`).join("");
 }
 
 // Si une photo est introuvable, on affiche l'image temporaire à la place
@@ -568,6 +631,71 @@ function animerCartes() {
 }
 
 /* =========================================================
+   H bis. SAVEURS : changement de couleur + ingrédients en parallaxe
+   ========================================================= */
+// Écrit la saveur dans <html data-flavour="..."> : le CSS fait le reste (fondu de 600 ms)
+function choisirSaveur(id) {
+  const racine = document.documentElement;
+  if (racine.dataset.flavour === id) return;
+  racine.dataset.flavour = id;
+  document.querySelectorAll(".groupe").forEach(g => g.classList.toggle("actif", g.dataset.saveur === id));
+  const s = SAVEURS.find(x => x.id === id);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (s && meta) meta.content = s.fond;
+}
+
+// Se déclenche quand une saveur traverse le milieu de l'écran
+function suivreSaveurs() {
+  if (!("IntersectionObserver" in window)) return;
+  const obs = new IntersectionObserver(entrees => entrees.forEach(e => { if (e.isIntersecting) choisirSaveur(e.target.id); }),
+    { rootMargin: "-50% 0px -50% 0px" });
+  document.querySelectorAll(".saveur").forEach(s => obs.observe(s));
+}
+
+// Crée les ingrédients : petits = lents et floutés, grands = rapides et nets (profondeur sans WebGL)
+const ingredients = [];
+function construireIngredients() {
+  $("ingredients").innerHTML = SAVEURS.map(s => `<div class="groupe${s.id === document.documentElement.dataset.flavour ? " actif" : ""}" data-saveur="${s.id}"></div>`).join("");
+  SAVEURS.forEach(s => {
+    const groupe = document.querySelector(`.groupe[data-saveur="${s.id}"]`);
+    s.ingredients.forEach(([image, x, y, vitesse], i) => {
+      const taille = Math.round(28 + (vitesse - 0.2) * 140);          // 0.2 → 28 px ... 0.6 → 84 px
+      const el = document.createElement("div");
+      el.className = "ing";
+      el.style.fontSize = taille + "px";
+      el.style.opacity = (0.35 + (vitesse - 0.2) * 0.75).toFixed(2);   // les grands un peu plus visibles
+      if (vitesse <= 0.3) el.style.filter = "blur(2px)";
+      el.innerHTML = image.includes("/") ? `<img src="${image}" alt="">` : image;
+      groupe.appendChild(el);
+      ingredients.push({ el, x, y, vitesse, taille, angle: (i % 2 ? 1 : -1) * (8 + i * 5) });
+    });
+  });
+}
+
+let hauteurEcran = innerHeight, largeurEcran = innerWidth, parallaxeEnCours = false;
+function placerIngredients() {
+  parallaxeEnCours = false;
+  const defile = animations ? scrollY : 0;
+  const marge = 120, plage = hauteurEcran + marge * 2;
+  for (const i of ingredients) {
+    // l'ingrédient monte à (vitesse × défilement) et réapparaît en bas quand il sort par le haut
+    const y = (((i.y / 100) * hauteurEcran - defile * i.vitesse + marge) % plage + plage) % plage - marge;
+    const x = (i.x / 100) * largeurEcran - i.taille / 2;
+    i.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${i.angle + defile * i.vitesse * 0.05}deg)`;
+  }
+}
+function demanderParallaxe() {
+  if (!parallaxeEnCours) { parallaxeEnCours = true; requestAnimationFrame(placerIngredients); }
+}
+function demarrerParallaxe() {
+  construireIngredients();
+  placerIngredients();
+  if (!animations) return;                       // "réduire les animations" : ingrédients immobiles
+  addEventListener("scroll", demanderParallaxe, { passive: true });
+  addEventListener("resize", () => { hauteurEcran = innerHeight; largeurEcran = innerWidth; demanderParallaxe(); });
+}
+
+/* =========================================================
    I. CLICS SUR LES BOUTONS
    ========================================================= */
 document.addEventListener("click", e => {
@@ -599,6 +727,8 @@ choisirType(typeCommande);
 majPanier();
 afficherHoraires();
 suivreCategories();
+suivreSaveurs();
+demarrerParallaxe();
 animerCartes();
 setTimeout(() => $("intro").remove(), 1600);
 </script>
